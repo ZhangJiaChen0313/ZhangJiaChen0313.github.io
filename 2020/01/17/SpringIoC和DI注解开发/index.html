@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>SpringIoC和DI注解开发 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="1.Spring配置数据源1.1 数据源（连接池）的作用数据源(连接池)是提高程序性能如出现的 事先实例化数据源，初始化部分连接资源 使用连接资源时从数据源中获取 使用完毕后将连接资源归还给数据源 常见的数据源(连接池)：DBCP、C3P0、BoneCP、Druid等 开发步骤 ①导入数据源的坐标和数据库驱动坐标 ②创建数据源对象 ③设置数据源的基本连接数据 ④使用数据源获取连接资源和归还连接资源">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringIoC和DI注解开发">
+<meta property="og:url" content="http://yoursite.com/2020/01/17/SpringIoC%E5%92%8CDI%E6%B3%A8%E8%A7%A3%E5%BC%80%E5%8F%91/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="1.Spring配置数据源1.1 数据源（连接池）的作用数据源(连接池)是提高程序性能如出现的 事先实例化数据源，初始化部分连接资源 使用连接资源时从数据源中获取 使用完毕后将连接资源归还给数据源 常见的数据源(连接池)：DBCP、C3P0、BoneCP、Druid等 开发步骤 ①导入数据源的坐标和数据库驱动坐标 ②创建数据源对象 ③设置数据源的基本连接数据 ④使用数据源获取连接资源和归还连接资源">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-01-17T05:44:19.470Z">
+<meta property="article:modified_time" content="2020-01-12T06:45:45.591Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SpringIoC和DI注解开发" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/01/17/SpringIoC%E5%92%8CDI%E6%B3%A8%E8%A7%A3%E5%BC%80%E5%8F%91/" class="article-date">
+  <time datetime="2020-01-17T05:44:19.470Z" itemprop="datePublished">2020-01-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SpringIoC和DI注解开发
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="1-Spring配置数据源"><a href="#1-Spring配置数据源" class="headerlink" title="1.Spring配置数据源"></a>1.Spring配置数据源</h2><h3 id="1-1-数据源（连接池）的作用"><a href="#1-1-数据源（连接池）的作用" class="headerlink" title="1.1 数据源（连接池）的作用"></a>1.1 数据源（连接池）的作用</h3><p>数据源(连接池)是提高程序性能如出现的</p>
+<p>事先实例化数据源，初始化部分连接资源</p>
+<p>使用连接资源时从数据源中获取</p>
+<p>使用完毕后将连接资源归还给数据源</p>
+<p>常见的数据源(连接池)：DBCP、C3P0、BoneCP、Druid等</p>
+<p><strong>开发步骤</strong></p>
+<p>①导入数据源的坐标和数据库驱动坐标</p>
+<p>②创建数据源对象</p>
+<p>③设置数据源的基本连接数据</p>
+<p>④使用数据源获取连接资源和归还连接资源</p>
+<h3 id="1-2-数据源的手动创建"><a href="#1-2-数据源的手动创建" class="headerlink" title="1.2 数据源的手动创建"></a>1.2 数据源的手动创建</h3><p>①导入c3p0和druid的坐标</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- C3P0连接池 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>c3p0<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>c3p0<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.9.1.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- Druid连接池 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>druid<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.1.10<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>①导入mysql数据库驱动坐标</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- mysql驱动 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.1.39<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>②创建C3P0连接池</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testC3P0</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">	<span class="comment">//创建数据源</span></span><br><span class="line">	ComboPooledDataSource dataSource = <span class="keyword">new</span> ComboPooledDataSource();</span><br><span class="line">	<span class="comment">//设置数据库连接参数</span></span><br><span class="line">    dataSource.setDriverClass(<span class="string">"com.mysql.jdbc.Driver"</span>);    	               	               dataSource.setJdbcUrl(<span class="string">"jdbc:mysql://localhost:3306/test"</span>);</span><br><span class="line">    dataSource.setUser(<span class="string">"root"</span>);</span><br><span class="line">    dataSource.setPassword(<span class="string">"root"</span>);</span><br><span class="line">	<span class="comment">//获得连接对象</span></span><br><span class="line">	Connection connection = dataSource.getConnection();</span><br><span class="line">	System.out.println(connection);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>②创建Druid连接池</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testDruid</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="comment">//创建数据源</span></span><br><span class="line">    DruidDataSource dataSource = <span class="keyword">new</span> DruidDataSource();</span><br><span class="line">    <span class="comment">//设置数据库连接参数</span></span><br><span class="line">    dataSource.setDriverClassName(<span class="string">"com.mysql.jdbc.Driver"</span>); </span><br><span class="line">    dataSource.setUrl(<span class="string">"jdbc:mysql://localhost:3306/test"</span>);   </span><br><span class="line">    dataSource.setUsername(<span class="string">"root"</span>);</span><br><span class="line">    dataSource.setPassword(<span class="string">"root"</span>);</span><br><span class="line">    <span class="comment">//获得连接对象</span></span><br><span class="line">    Connection connection = dataSource.getConnection();    </span><br><span class="line">    System.out.println(connection);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>③提取jdbc.properties配置文件</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">jdbc.driver</span>=<span class="string">com.mysql.jdbc.Driver</span></span><br><span class="line"><span class="meta">jdbc.url</span>=<span class="string">jdbc:mysql://localhost:3306/test</span></span><br><span class="line"><span class="meta">jdbc.username</span>=<span class="string">root</span></span><br><span class="line"><span class="meta">jdbc.password</span>=<span class="string">root</span></span><br></pre></td></tr></table></figure>
+
+<p>④读取jdbc.properties配置文件创建连接池</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testC3P0ByProperties</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="comment">//加载类路径下的jdbc.properties</span></span><br><span class="line">    ResourceBundle rb = ResourceBundle.getBundle(<span class="string">"jdbc"</span>);</span><br><span class="line">    ComboPooledDataSource dataSource = <span class="keyword">new</span> ComboPooledDataSource(); </span><br><span class="line">    dataSource.setDriverClass(rb.getString(<span class="string">"jdbc.driver"</span>));   </span><br><span class="line">    dataSource.setJdbcUrl(rb.getString(<span class="string">"jdbc.url"</span>)); </span><br><span class="line">    dataSource.setUser(rb.getString(<span class="string">"jdbc.username"</span>)); </span><br><span class="line">    dataSource.setPassword(rb.getString(<span class="string">"jdbc.password"</span>));</span><br><span class="line">    Connection connection = dataSource.getConnection();   </span><br><span class="line">    System.out.println(connection);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-Spring配置数据源"><a href="#1-3-Spring配置数据源" class="headerlink" title="1.3 Spring配置数据源"></a>1.3 Spring配置数据源</h3><p>可以将DataSource的创建权交由Spring容器去完成</p>
+<p>DataSource有无参构造方法，而Spring默认就是通过无参构造方法实例化对象的</p>
+<p>DataSource要想使用需要通过set方法设置数据库连接信息，而Spring可以通过set方法进行字符串注入</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"dataSource"</span> <span class="attr">class</span>=<span class="string">"com.mchange.v2.c3p0.ComboPooledDataSource"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"driverClass"</span> <span class="attr">value</span>=<span class="string">"com.mysql.jdbc.Driver"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"jdbcUrl"</span> <span class="attr">value</span>=<span class="string">"jdbc:mysql://localhost:3306/test"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"user"</span> <span class="attr">value</span>=<span class="string">"root"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"password"</span> <span class="attr">value</span>=<span class="string">"root"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>测试从容器当中获取数据源</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ApplicationContext applicationContext = <span class="keyword">new</span> </span><br><span class="line">           ClassPathXmlApplicationContext(<span class="string">"applicationContext.xml"</span>);</span><br><span class="line">               DataSource dataSource = (DataSource) </span><br><span class="line">applicationContext.getBean(<span class="string">"dataSource"</span>);</span><br><span class="line">Connection connection = dataSource.getConnection();</span><br><span class="line">System.out.println(connection);</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-4-抽取jdbc配置文件"><a href="#1-4-抽取jdbc配置文件" class="headerlink" title="1.4 抽取jdbc配置文件"></a>1.4 抽取jdbc配置文件</h3><p>applicationContext.xml加载jdbc.properties配置文件获得连接信息。</p>
+<p>首先，需要引入context命名空间和约束路径：</p>
+<p>命名空间：xmlns:context=”<a href="http://www.springframework.org/schema/context&quot;" target="_blank" rel="noopener">http://www.springframework.org/schema/context&quot;</a></p>
+<p>约束路径：<a href="http://www.springframework.org/schema/context" target="_blank" rel="noopener">http://www.springframework.org/schema/context</a><br>​                       </p>
+<p>​                   <a href="http://www.springframework.org/schema/context/spring-context.xsd" target="_blank" rel="noopener">http://www.springframework.org/schema/context/spring-context.xsd</a></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">context:property-placeholder</span> <span class="attr">location</span>=<span class="string">"classpath:jdbc.properties"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"dataSource"</span> <span class="attr">class</span>=<span class="string">"com.mchange.v2.c3p0.ComboPooledDataSource"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"driverClass"</span> <span class="attr">value</span>=<span class="string">"$&#123;jdbc.driver&#125;"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"jdbcUrl"</span> <span class="attr">value</span>=<span class="string">"$&#123;jdbc.url&#125;"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"user"</span> <span class="attr">value</span>=<span class="string">"$&#123;jdbc.username&#125;"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"password"</span> <span class="attr">value</span>=<span class="string">"$&#123;jdbc.password&#125;"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="1-5-知识要点"><a href="#1-5-知识要点" class="headerlink" title="1.5 知识要点"></a>1.5 知识要点</h3><p>Spring容器加载properties文件</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">context:property-placeholder</span> <span class="attr">location</span>=<span class="string">"xx.properties"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">""</span> <span class="attr">value</span>=<span class="string">"$&#123;key&#125;"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-Spring注解开发"><a href="#2-Spring注解开发" class="headerlink" title="2. Spring注解开发"></a>2. Spring注解开发</h2><h3 id="2-1-Spring原始注解"><a href="#2-1-Spring原始注解" class="headerlink" title="2.1 Spring原始注解"></a>2.1 Spring原始注解</h3><p>Spring是轻代码而重配置的框架，配置比较繁重，影响开发效率，所以注解开发是一种趋势，注解代替xml配置文件可以简化配置，提高开发效率。 </p>
+<p>Spring原始注解主要是替代<Bean>的配置</p>
+<table>
+<thead>
+<tr>
+<th>注解</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>@Component</td>
+<td>使用在类上用于实例化Bean</td>
+</tr>
+<tr>
+<td>@Controller</td>
+<td>使用在web层类上用于实例化Bean</td>
+</tr>
+<tr>
+<td>@Service</td>
+<td>使用在service层类上用于实例化Bean</td>
+</tr>
+<tr>
+<td>@Repository</td>
+<td>使用在dao层类上用于实例化Bean</td>
+</tr>
+<tr>
+<td>@Autowired</td>
+<td>使用在字段上用于根据类型依赖注入</td>
+</tr>
+<tr>
+<td>@Qualifier</td>
+<td>结合@Autowired一起使用用于根据名称进行依赖注入</td>
+</tr>
+<tr>
+<td>@Resource</td>
+<td>相当于@Autowired+@Qualifier，按照名称进行注入</td>
+</tr>
+<tr>
+<td>@Value</td>
+<td>注入普通属性</td>
+</tr>
+<tr>
+<td>@Scope</td>
+<td>标注Bean的作用范围</td>
+</tr>
+<tr>
+<td>@PostConstruct</td>
+<td>使用在方法上标注该方法是Bean的初始化方法</td>
+</tr>
+<tr>
+<td>@PreDestroy</td>
+<td>使用在方法上标注该方法是Bean的销毁方法</td>
+</tr>
+</tbody></table>
+<p>注意：</p>
+<p>使用注解进行开发时，需要在applicationContext.xml中配置组件扫描，作用是指定哪个包及其子包下的Bean需要进行扫描以便识别使用注解配置的类、字段和方法。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;!--注解的组件扫描--&gt;</span><br><span class="line">&lt;context:component-scan base-package="com.itheima"&gt;&lt;/context:component-scan&gt;</span><br></pre></td></tr></table></figure>
+
+<p>使用@Compont或@Repository标识UserDaoImpl需要Spring进行实例化。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//@Component("userDao")</span></span><br><span class="line"><span class="meta">@Repository</span>(<span class="string">"userDao"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserDaoImpl</span> <span class="keyword">implements</span> <span class="title">UserDao</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">save</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    	System.out.println(<span class="string">"save running... ..."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用@Compont或@Service标识UserServiceImpl需要Spring进行实例化</p>
+<p>使用@Autowired或者@Autowired+@Qulifier或者@Resource进行userDao的注入</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//@Component("userService")</span></span><br><span class="line"><span class="meta">@Service</span>(<span class="string">"userService"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserServiceImpl</span> <span class="keyword">implements</span> <span class="title">UserService</span> </span>&#123;</span><br><span class="line">    <span class="comment">/*@Autowired</span></span><br><span class="line"><span class="comment">    @Qualifier("userDao")*/</span></span><br><span class="line">    <span class="meta">@Resource</span>(name=<span class="string">"userDao"</span>)</span><br><span class="line">    <span class="keyword">private</span> UserDao userDao;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">save</span><span class="params">()</span> </span>&#123;       </span><br><span class="line">   	  userDao.save();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用@Value进行字符串的注入</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Repository</span>(<span class="string">"userDao"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserDaoImpl</span> <span class="keyword">implements</span> <span class="title">UserDao</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Value</span>(<span class="string">"注入普通数据"</span>)</span><br><span class="line">    <span class="keyword">private</span> String str;</span><br><span class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;jdbc.driver&#125;"</span>)</span><br><span class="line">    <span class="keyword">private</span> String driver;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">save</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(str);</span><br><span class="line">        System.out.println(driver);</span><br><span class="line">        System.out.println(<span class="string">"save running... ..."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用@Scope标注Bean的范围</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//@Scope("prototype")</span></span><br><span class="line"><span class="meta">@Scope</span>(<span class="string">"singleton"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserDaoImpl</span> <span class="keyword">implements</span> <span class="title">UserDao</span> </span>&#123;</span><br><span class="line">   <span class="comment">//此处省略代码</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用@PostConstruct标注初始化方法，使用@PreDestroy标注销毁方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PostConstruct</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span>&#123;</span><br><span class="line">	System.out.println(<span class="string">"初始化方法...."</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@PreDestroy</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">destroy</span><span class="params">()</span></span>&#123;</span><br><span class="line">	System.out.println(<span class="string">"销毁方法....."</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-Spring新注解"><a href="#2-2-Spring新注解" class="headerlink" title="2.2 Spring新注解"></a>2.2 Spring新注解</h3><p>使用上面的注解还不能全部替代xml配置文件，还需要使用注解替代的配置如下：</p>
+<p>非自定义的Bean的配置：<bean></p>
+<p>加载properties文件的配置：<a href="context:property-placeholder">context:property-placeholder</a></p>
+<p>组件扫描的配置：<a href="context:component-scan">context:component-scan</a></p>
+<p>引入其他文件：<import></p>
+<table>
+<thead>
+<tr>
+<th>注解</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>@Configuration</td>
+<td>用于指定当前类是一个 Spring   配置类，当创建容器时会从该类上加载注解</td>
+</tr>
+<tr>
+<td>@ComponentScan</td>
+<td>用于指定 Spring   在初始化容器时要扫描的包。   作用和在 Spring   的 xml 配置文件中的   &lt;context:component-scan   base-package=”com.itheima”/&gt;一样</td>
+</tr>
+<tr>
+<td>@Bean</td>
+<td>使用在方法上，标注将该方法的返回值存储到   Spring   容器中</td>
+</tr>
+<tr>
+<td>@PropertySource</td>
+<td>用于加载.properties   文件中的配置</td>
+</tr>
+<tr>
+<td>@Import</td>
+<td>用于导入其他配置类</td>
+</tr>
+</tbody></table>
+<p>@Configuration</p>
+<p>@ComponentScan</p>
+<p>@Import</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@ComponentScan</span>(<span class="string">"com.itheima"</span>)</span><br><span class="line"><span class="meta">@Import</span>(&#123;DataSourceConfiguration<span class="class">.<span class="keyword">class</span>&#125;)</span></span><br><span class="line"><span class="class"><span class="title">public</span> <span class="title">class</span> <span class="title">SpringConfiguration</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>@PropertySource</p>
+<p>@value</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PropertySource</span>(<span class="string">"classpath:jdbc.properties"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DataSourceConfiguration</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;jdbc.driver&#125;"</span>)</span><br><span class="line">    <span class="keyword">private</span> String driver;</span><br><span class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;jdbc.url&#125;"</span>)</span><br><span class="line">    <span class="keyword">private</span> String url;</span><br><span class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;jdbc.username&#125;"</span>)</span><br><span class="line">    <span class="keyword">private</span> String username;</span><br><span class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;jdbc.password&#125;"</span>)</span><br><span class="line">    <span class="keyword">private</span> String password;</span><br></pre></td></tr></table></figure>
+
+<p>@Bean</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span>(name=<span class="string">"dataSource"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> DataSource <span class="title">getDataSource</span><span class="params">()</span> <span class="keyword">throws</span> PropertyVetoException </span>&#123; </span><br><span class="line">    ComboPooledDataSource dataSource = <span class="keyword">new</span> ComboPooledDataSource(); </span><br><span class="line">    dataSource.setDriverClass(driver);</span><br><span class="line">    dataSource.setJdbcUrl(url);</span><br><span class="line">    dataSource.setUser(username);</span><br><span class="line">    dataSource.setPassword(password);</span><br><span class="line">    <span class="keyword">return</span> dataSource;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试加载核心配置类创建Spring容器</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testAnnoConfiguration</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">ApplicationContext applicationContext = <span class="keyword">new</span> </span><br><span class="line">          AnnotationConfigApplicationContext(SpringConfiguration<span class="class">.<span class="keyword">class</span>)</span>;    UserService userService = (UserService)    </span><br><span class="line">    applicationContext.getBean(<span class="string">"userService"</span>);</span><br><span class="line">    userService.save();</span><br><span class="line">    DataSource dataSource = (DataSource) </span><br><span class="line">    applicationContext.getBean(<span class="string">"dataSource"</span>);</span><br><span class="line">    Connection connection = dataSource.getConnection(); </span><br><span class="line">    System.out.println(connection);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-Spring整合Junit"><a href="#3-Spring整合Junit" class="headerlink" title="3. Spring整合Junit"></a>3. Spring整合Junit</h2><h3 id="3-1-原始Junit测试Spring的问题"><a href="#3-1-原始Junit测试Spring的问题" class="headerlink" title="3.1 原始Junit测试Spring的问题"></a>3.1 原始Junit测试Spring的问题</h3><p>在测试类中，每个测试方法都有以下两行代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ApplicationContext ac = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"bean.xml"</span>);</span><br><span class="line">IAccountService as = ac.getBean(<span class="string">"accountService"</span>,IAccountService<span class="class">.<span class="keyword">class</span>)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这两行代码的作用是获取容器，如果不写的话，直接会提示空指针异常。所以又不能轻易删掉。</p>
+<h3 id="3-2-上述问题解决思路"><a href="#3-2-上述问题解决思路" class="headerlink" title="3.2 上述问题解决思路"></a>3.2 上述问题解决思路</h3><p>让SpringJunit负责创建Spring容器，但是需要将配置文件的名称告诉它</p>
+<p>将需要进行测试Bean直接在测试类中进行注入</p>
+<h3 id="3-3-Spring集成Junit步骤"><a href="#3-3-Spring集成Junit步骤" class="headerlink" title="3.3 Spring集成Junit步骤"></a>3.3 Spring集成Junit步骤</h3><p>①导入spring集成Junit的坐标</p>
+<p>②使用@Runwith注解替换原来的运行期</p>
+<p>③使用@ContextConfiguration指定配置文件或配置类</p>
+<p>④使用@Autowired注入需要测试的对象</p>
+<p>⑤创建测试方法进行测试</p>
+<h3 id="3-4-Spring集成Junit代码实现"><a href="#3-4-Spring集成Junit代码实现" class="headerlink" title="3.4 Spring集成Junit代码实现"></a>3.4 Spring集成Junit代码实现</h3><p>①导入spring集成Junit的坐标</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--此处需要注意的是，spring5 及以上版本要求 junit 的版本必须是 4.12 及以上--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.0.2.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.12<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>②使用@Runwith注解替换原来的运行期</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RunWith</span>(SpringJUnit4ClassRunner<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class"><span class="title">public</span> <span class="title">class</span> <span class="title">SpringJunitTest</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>③使用@ContextConfiguration指定配置文件或配置类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RunWith</span>(SpringJUnit4ClassRunner<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class">//加载<span class="title">spring</span>核心配置文件</span></span><br><span class="line"><span class="class">//@<span class="title">ContextConfiguration</span>(<span class="title">value</span> </span>= &#123;<span class="string">"classpath:applicationContext.xml"</span>&#125;)</span><br><span class="line"><span class="comment">//加载spring核心配置类</span></span><br><span class="line"><span class="meta">@ContextConfiguration</span>(classes = &#123;SpringConfiguration<span class="class">.<span class="keyword">class</span>&#125;)</span></span><br><span class="line"><span class="class"><span class="title">public</span> <span class="title">class</span> <span class="title">SpringJunitTest</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>④使用@Autowired注入需要测试的对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RunWith</span>(SpringJUnit4ClassRunner<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class">@<span class="title">ContextConfiguration</span>(<span class="title">classes</span> </span>= &#123;SpringConfiguration<span class="class">.<span class="keyword">class</span>&#125;)</span></span><br><span class="line"><span class="class"><span class="title">public</span> <span class="title">class</span> <span class="title">SpringJunitTest</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> UserService userService;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>⑤创建测试方法进行测试</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RunWith</span>(SpringJUnit4ClassRunner<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class">@<span class="title">ContextConfiguration</span>(<span class="title">classes</span> </span>= &#123;SpringConfiguration<span class="class">.<span class="keyword">class</span>&#125;)<span class="title">public</span> <span class="title">class</span> <span class="title">SpringJunitTest</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> UserService userService;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testUserService</span><span class="params">()</span></span>&#123;</span><br><span class="line">   	 userService.save();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Spring集成Junit步骤</p>
+<p>①导入spring集成Junit的坐标</p>
+<p>②使用@Runwith注解替换原来的运行期</p>
+<p>③使用@ContextConfiguration指定配置文件或配置类</p>
+<p>④使用@Autowired注入需要测试的对象</p>
+<p>⑤创建测试方法进行测试</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/01/17/SpringIoC%E5%92%8CDI%E6%B3%A8%E8%A7%A3%E5%BC%80%E5%8F%91/" data-id="ck5hr1mbb000158oe9qufd8bw" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/01/17/spring-day02/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          spring-day02
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/01/17/01-SpringIoC&DI/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">01-SpringIoC&amp;DI</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/01/17/Spring%20JdbcTemplate&%E5%A3%B0%E6%98%8E%E5%BC%8F%E4%BA%8B%E5%8A%A1/">Spring JdbcTemplate&amp;声明式事务</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/17/spring-day02/">spring-day02</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/17/SpringIoC%E5%92%8CDI%E6%B3%A8%E8%A7%A3%E5%BC%80%E5%8F%91/">SpringIoC和DI注解开发</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/17/01-SpringIoC&DI/">01-SpringIoC&amp;DI</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
